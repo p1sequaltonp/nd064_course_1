@@ -1,4 +1,6 @@
 import sqlite3
+import logging
+import time
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
@@ -8,6 +10,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
 db_connection_count = 0
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('app')
 
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
@@ -47,13 +53,16 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
+      logger.info(f"{time.strftime('%d/%m/%Y, %H:%M:%S')}, A non-existing article accessed, 404 returned.")
       return render_template('404.html'), 404
     else:
+      logger.info(f"{time.strftime('%d/%m/%Y, %H:%M:%S')}, Article \"{post['title']}\" retrieved!")
       return render_template('post.html', post=post)
 
 # Define the About Us page
 @app.route('/about')
 def about():
+    logger.info(f"{time.strftime('%d/%m/%Y, %H:%M:%S')}, The \"About Us\" page retrieved.")
     return render_template('about.html')
 
 # Define the post creation functionality 
@@ -71,7 +80,7 @@ def create():
                          (title, content))
             connection.commit()
             connection.close()
-
+            logger.info(f"{time.strftime('%d/%m/%Y, %H:%M:%S')}, New article \"{title}\" created!")
             return redirect(url_for('index'))
 
     return render_template('create.html')
