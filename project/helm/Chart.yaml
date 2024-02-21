@@ -1,0 +1,10 @@
+apiVersion: v1
+name: techtrends
+description: Techtrends Project Chart
+keywords:
+- python
+- techtrends
+version: 1.0.0
+maintainers:
+- name: raza.sayed
+  email: raza.sayed@gmail.com
